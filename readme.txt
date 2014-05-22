@@ -1,8 +1,8 @@
 === GeoIP Detection ===
-Contributors: benjaminpick
+Contributors: benjaminpick, DavidAnderson
 Tags: geoip, ip, locator, latitude, longitude
 Requires at least: 3.5
-Tested up to: 3.9.1
+Tested up to: 3.8.1
 Stable tag: trunk
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -63,15 +63,15 @@ Put this code somewhere in your template files:
     if ($userInfo && $userInfo->country_code == 'DE')
         echo 'Hallo! Schön dass Sie hier sind!';
 
-Or, add the plugin shortcode somewhere in the page or post content:
+Or, add the plugin shortcode somewhere in a page content:
 
     Heyo, over there in [geoip_detect property="country_name"] !
    
 To see which property names are supported, refer to the [Plugin Backend](http://wordpress.org/plugins/geoip-detect/screenshots/).
 
-= What is planned to be implemented? =
+= Wishlist of new Features =
 
-Maxmind released a new API version (v2) with localized country names and a accuracy percentage. We will add it when it is out of beta.
+- use APIv2
 
 == Screenshots ==
 
@@ -79,20 +79,16 @@ Maxmind released a new API version (v2) with localized country names and a accur
 
 == Upgrade Notice == 
 
-= 1.6 =
-
-Automatic weekly update didn't work in all installations.
-
-= 1.5 =
+= 1.5.1 =
 
 Fixing automatic weekly updates.
 
-
 == Changelog ==
 
-= 1.6 =
-* FIX: Automatic weekly update. (Didn't work on all installations).
-* FIX: Do not include Maxmind Libraries again if already included by another plugin/theme
+= 1.5.1 =
+* FIX: Does not cause fatal errors if another plugin has already loaded the GeoIP library (tweaked version from Diego Zanella, http://dev.pathtoenlightenment.net, under the GPLv3; incoporated by David Anderson, http://updraftplus.com)
+* FIX: Prevent PHP notice when looking up IPs with no region entry in GeoIP database (from DA)
+* FIX: Remove duplicate copy of GeoIP library (from DA)
 
 = 1.5 =
 * FIX: Automatic weekly update. Go to the plugin page (Tools menu) to verify that an update is planned.

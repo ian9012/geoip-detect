@@ -1,6 +1,6 @@
 <?php
+
 //define('GEOIP_DETECT_AUTO_UPDATE_DEACTIVATED', true);
-require_once(ABSPATH.'/wp-admin/includes/file.php');
 
 function geoip_detect_get_database_upload_filename()
 {
@@ -26,6 +26,7 @@ function geoip_detect_update()
 {
 	$download_url = 'http://geolite.maxmind.com/download/geoip/database/GeoLiteCity.dat.gz';
 
+	if (!function_exists('download_url')) require_once(ABSPATH.'/wp-admin/includes/file.php');
 	$outFile = geoip_detect_get_database_upload_filename();
 
 	// Download
