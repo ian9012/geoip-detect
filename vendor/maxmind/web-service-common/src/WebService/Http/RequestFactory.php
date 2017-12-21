@@ -3,8 +3,8 @@
 namespace MaxMind\WebService\Http;
 
 /**
- * Class RequestFactory.
- *
+ * Class RequestFactory
+ * @package MaxMind\WebService\Http
  * @internal
  */
 class RequestFactory
@@ -16,7 +16,6 @@ class RequestFactory
     /**
      * @param $url
      * @param $options
-     *
      * @return CurlRequest
      */
     public function request($url, $options)

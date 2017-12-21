@@ -40,14 +40,7 @@ Basic usage
 
 ```php
 $curl = curl_init("https://example.org/");
-
-$caPathOrFile = \Composer\CaBundle\CaBundle::getSystemCaRootBundlePath());
-if (is_dir($caPathOrFile) || (is_link($caPathOrFile) && is_dir(readlink($caPathOrFile)))) {
-    curl_setopt($curl, CURLOPT_CAPATH, $caPathOrFile);
-} else {
-    curl_setopt($curl, CURLOPT_CAINFO, $caPathOrFile);
-}
-
+curl_setopt($curl, CURLOPT_CAINFO, \Composer\CaBundle\CaBundle::getSystemCaRootBundlePath());
 $result = curl_exec($curl);
 ```
 
@@ -60,11 +53,11 @@ $opts = array(
     )
 );
 
-$caPathOrFile = \Composer\CaBundle\CaBundle::getSystemCaRootBundlePath());
-if (is_dir($caPathOrFile) || (is_link($caPathOrFile) && is_dir(readlink($caPathOrFile)))) {
-    $opts['ssl']['capath'] = $caPathOrFile;
+$caPath = \Composer\CaBundle\CaBundle::getSystemCaRootBundlePath();
+if (is_dir($caPath)) {
+    $opts['ssl']['capath'] = $caPath;
 } else {
-    $opts['ssl']['cafile'] = $caPathOrFile;
+    $opts['ssl']['cafile'] = $caPath;
 }
 
 $context = stream_context_create($opts);

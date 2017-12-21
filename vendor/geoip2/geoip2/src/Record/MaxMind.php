@@ -15,5 +15,5 @@ class MaxMind extends AbstractRecord
     /**
      * @ignore
      */
-    protected $validAttributes = ['queriesRemaining'];
+    protected $validAttributes = array('queriesRemaining');
 }

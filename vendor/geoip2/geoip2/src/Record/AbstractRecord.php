@@ -2,24 +2,22 @@
 
 namespace GeoIp2\Record;
 
-abstract class AbstractRecord implements \JsonSerializable
+use GeoIp2\Compat\JsonSerializable;
+
+abstract class AbstractRecord implements JsonSerializable
 {
     private $record;
 
     /**
      * @ignore
-     *
-     * @param mixed $record
      */
     public function __construct($record)
     {
-        $this->record = isset($record) ? $record : [];
+        $this->record = isset($record) ? $record : array();
     }
 
     /**
      * @ignore
-     *
-     * @param mixed $attr
      */
     public function __get($attr)
     {
@@ -31,11 +29,12 @@ abstract class AbstractRecord implements \JsonSerializable
         } elseif ($this->validAttribute($attr)) {
             if (preg_match('/^is_/', $key)) {
                 return false;
+            } else {
+                return null;
             }
-
-            return null;
+        } else {
+            throw new \RuntimeException("Unknown attribute: $attr");
         }
-        throw new \RuntimeException("Unknown attribute: $attr");
     }
 
     public function __isset($attr)
@@ -51,7 +50,7 @@ abstract class AbstractRecord implements \JsonSerializable
 
     private function validAttribute($attr)
     {
-        return in_array($attr, $this->validAttributes, true);
+        return in_array($attr, $this->validAttributes);
     }
 
     public function jsonSerialize()

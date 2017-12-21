@@ -3,8 +3,8 @@
 namespace MaxMind\WebService\Http;
 
 /**
- * Interface Request.
- *
+ * Interface Request
+ * @package MaxMind\WebService\Http
  * @internal
  */
 interface Request
@@ -17,7 +17,6 @@ interface Request
 
     /**
      * @param $body
-     *
      * @return mixed
      */
     public function post($body);
