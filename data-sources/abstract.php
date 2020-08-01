@@ -33,11 +33,30 @@ abstract class AbstractDataSource {
 	public function deactivate() { }
 	public function uninstall() {}
 	
-	public function getReader($locales = array('en'), $options = array()) { return null; }
+	public function getReader($locales = array('en'), $options = []) { return null; }
 	
 	public function isWorking() { return false; }
 }
 
+
+function get_protected_property($object, $name) {
+ // This would work but kinda hacky. 
+}
+
+function set_protected_property($object, $name, $value) {
+
+}
+
+function append_to_protected_array($object, $name, $array) {
+	$value = get_protected_property($object, $name);
+
+	if (!is_array($value)) {
+		$value = [];
+	}
+	$value = array_merge($value, $array);
+	
+	set_protected_property($object, $name, $value);
+}
 
 /**
  * This Class extends the Maxmind City with more attributes.
@@ -59,6 +78,10 @@ class City extends \GeoIp2\Model\Insights {
 		parent::__construct($raw, $locales);
 		
 		$this->extra = new ExtraInformation($this->get('extra'));
+
+		$this->addIsoCode3($this->country);
+		$this->addIsoCode3($this->registeredCountry);
+		$this->addIsoCode3($this->representedCountry);
 	}
 
 	public function __get($attr) {
@@ -67,7 +90,13 @@ class City extends \GeoIp2\Model\Insights {
 		else
 			return parent::__get($attr);
 	}
+
+	private function addIsoCode3($object) {
+		append_to_protected_array($object, 'validAttributes', ['isoCode3']);
+	}
 }
+
+
 
 /**
  * @property string $source Id of the source that this record is originating from.
@@ -81,7 +110,7 @@ class ExtraInformation extends \GeoIp2\Record\AbstractRecord {
 	/**
 	 * @ignore
 	 */
-	protected $validAttributes = array('source', 'cached', 'error', 'original', 'flag', 'tel');
+	protected $validAttributes = array('source', 'cached', 'error', 'original', 'flag', 'tel', '');
 }
 
 interface ReaderInterface extends \GeoIp2\ProviderInterface {
