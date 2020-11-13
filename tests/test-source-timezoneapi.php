@@ -23,9 +23,6 @@ class TimezoneapiSourceTest extends WP_UnitTestCase_GeoIP_Detect
 		$this->assertNotNull($source, "Source was null");
 		$this->assertSame('timezoneapi', $source->getId(), 'Id of current source is incorrect');
 
-		$reader = $source->getReader();
-		$this->assertNull($reader, "Reader was not null");
-
 		add_filter('pre_option_geoip-detect-timezoneapi_token', array($this, 'filter_set_token'), "testToken");
 		$reader = $source->getReader();
 		$this->assertNotNull($reader, "Reader was not null");
@@ -59,13 +56,16 @@ class TimezoneapiSourceTest extends WP_UnitTestCase_GeoIP_Detect
 
 		$record = geoip_detect2_get_info_from_ip(GEOIP_DETECT_TEST_IP);
 		$this->assertNotEmpty($record->extra->error);
-		$this->assertSame($record->extra->error, "Lookup Error: Unable to get ip data. Please ensure that a valid timezoneapi token is used.");
 	}
 
+	/**
+	 * @expectedException RuntimeException
+	 * @expectedExceptionMesssage Unable to get ip data. Please ensure that a valid timezoneapi token is used.
+	 */
 	function testNoToken() {
-		$record = geoip_detect2_get_info_from_ip(GEOIP_DETECT_TEST_IP);
-		$this->assertNotEmpty($record->extra->error);
-		$this->assertSame($record->extra->error, "No reader was found. Check if the configuration is complete and correct.");
+		$registry = DataSourceRegistry::getInstance();
+		$source = $registry->getSource('timezoneapi');
+		$source->getReader()->city(GEOIP_DETECT_TEST_IP);
 	}
 
 	public function tearDown()

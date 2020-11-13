@@ -3,13 +3,13 @@
 namespace YellowTree\GeoipDetect\DataSources\Timezoneapi;
 
 use Exception;
-use GeoIp2\Model\City;
 use RuntimeException;
 use YellowTree\GeoipDetect\DataSources\AbstractDataSource;
-use YellowTree\GeoipDetect\DataSources\ReaderInterface;
+use YellowTree\GeoipDetect\DataSources\AbstractReader;
+use YellowTree\GeoipDetect\DataSources\City;
 use function http_build_query;
 
-class TimezoneApiReader implements ReaderInterface {
+class TimezoneApiReader extends AbstractReader {
 
 	/**
 	 * Timezoneapi API IP url
@@ -29,12 +29,8 @@ class TimezoneApiReader implements ReaderInterface {
 	 */
 	public function __construct($token)
 	{
+		parent::__construct();
 		$this->token = $token;
-	}
-
-	public function country($ipAddress)
-	{
-		return $this->city($ipAddress);
 	}
 
 	public function city($ipAddress)
@@ -42,11 +38,9 @@ class TimezoneApiReader implements ReaderInterface {
 		return new City($this->getTimezoneApiRawResponse($ipAddress), array('en'));
 	}
 
-	public function close(){}
-
 	/**
 	 * @param $ipAddress
-	 * @return array|null
+	 * @return array
 	 * @throws Exception
 	 */
 	protected function getTimezoneApiRawResponse($ipAddress)
@@ -55,6 +49,10 @@ class TimezoneApiReader implements ReaderInterface {
 
 		if (is_null($response) || !$response) {
 			throw new RuntimeException("Unable to get ip data. Please ensure that a valid timezoneapi token is used.");
+		}
+
+		if (isset($response['meta']) && intval($response['meta']['code']) !== 200) {
+			throw new RuntimeException($response['meta']['message']);
 		}
 
 		$raw = array();
@@ -125,6 +123,7 @@ class TimezoneApiReader implements ReaderInterface {
 				array(
 					'http' => array(
 						'timeout' => 1,
+						'ignore_errors' => true
 					),
 				)
 			);
@@ -200,10 +199,6 @@ class TimezoneApiSource extends AbstractDataSource
 
 	public function getReader($locales = array('en'), $options = array())
 	{
-		if (!$this->isWorking()) {
-			return null;
-		}
-
 		return new TimezoneApiReader($this->token);
 	}
 
