@@ -33,19 +33,24 @@ class TimezoneApiReader extends AbstractReader {
 		$this->token = $token;
 	}
 
-	public function city($ipAddress)
+	public function city($ip)
 	{
-		return new City($this->getTimezoneApiRawResponse($ipAddress), array('en'));
+		return new City($this->getTimezoneApiRawResponse($ip), array('en'));
+	}
+
+	public function country($ip)
+	{
+		return $this->city($ip);
 	}
 
 	/**
-	 * @param $ipAddress
+	 * @param $ip
 	 * @return array
 	 * @throws Exception
 	 */
-	protected function getTimezoneApiRawResponse($ipAddress)
+	protected function getTimezoneApiRawResponse($ip)
 	{
-		$response = $this->requestTimezoneApi($ipAddress);
+		$response = $this->requestTimezoneApi($ip);
 
 		if (is_null($response) || !$response) {
 			throw new RuntimeException("Unable to get ip data. Please ensure that a valid timezoneapi token is used.");
@@ -109,16 +114,16 @@ class TimezoneApiReader extends AbstractReader {
 			$raw['extra']['currency_code'] = $timezone['currency_alpha_code'];
 		}
 
-		$raw['traits']['ip_address'] = $ipAddress;
+		$raw['traits']['ip_address'] = $ip;
 		$raw['extra']['original'] = $data;
 
 		return $raw;
 	}
 
-	private function requestTimezoneApi($ipAddress)
+	private function requestTimezoneApi($ip)
 	{
 		try {
-			$url = $this->buildUrl($ipAddress);
+			$url = $this->buildUrl($ip);
 			$context = stream_context_create(
 				array(
 					'http' => array(
